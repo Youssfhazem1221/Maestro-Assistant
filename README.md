@@ -29,5 +29,5 @@ This project uses **Vite** and **CRXJS** for modern extension development.
 2.  Run these commands in your terminal:
     ```bash
     git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-    git push -u origin master
+    git push -u origin main
     ```
