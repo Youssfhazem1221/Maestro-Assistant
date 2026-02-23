@@ -1,0 +1,47 @@
+/* Styles for the injected Gemini Assistant UI */
+#gemini-assistant-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.gemini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.gemini-header h3 {
+    margin: 0;
+    color: purple;
+}
+
+#gemini-generate-btn {
+    background-color: #673ab7;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#gemini-generate-btn:disabled {
+    background-color: #b39ddb;
+    cursor: not-allowed;
+}
+
+#gemini-suggestion-area,
+#gemini-rules-input,
+#gemini-examples-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-height: 80px;
+    font-family: monospace;
+}

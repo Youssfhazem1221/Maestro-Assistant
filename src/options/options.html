@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Maestro Automation Options</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --input-bg: #ffffff;
+            --input-border: #cccccc;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --label-color: #007bff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            background-color: var(--success-color);
+        }
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--input-border);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--label-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-row">
+        <h1>Maestro Settings</h1>
+    </div>
+
+    <div class="form-group">
+        <h2>HelpScout Integration</h2>
+        <p>Enter your HelpScout App ID and Secret to enable advanced features like conversation merging.</p>
+        <div class="form-group">
+            <label for="helpscout-app-id">App ID</label>
+            <input type="text" id="helpscout-app-id" placeholder="Enter HelpScout App ID">
+        </div>
+        <div class="form-group">
+            <label for="helpscout-app-secret">App Secret</label>
+            <input type="password" id="helpscout-app-secret" placeholder="Enter HelpScout App Secret">
+        </div>
+        <div class="button-group">
+            <button id="save-button">Save Settings</button>
+        </div>
+
+        <div class="form-group" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <h2>Google Sheets Sync</h2>
+            <p>Archive your activity logs permanently in a Google Sheet.</p>
+            <div class="form-group">
+                <label for="google-sheets-enabled">
+                    <input type="checkbox" id="google-sheets-enabled" style="width: auto; margin-right: 10px;">
+                    Enable Auto-Sync
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="google-spreadsheet-id">Spreadsheet ID</label>
+                <input type="text" id="google-spreadsheet-id" placeholder="Enter Spreadsheet ID">
+                <small style="color: #666;">Found in URL: /d/SPREADSHEET_ID/edit</small>
+            </div>
+            <div class="button-group">
+                <button id="test-sync" style="background-color: #4285f4;">Authorize & Sync to Sheets</button>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <h2>AI & Integrations</h2>
+            <p>Enter your Groq API key to enable AI-powered ticket summarization.</p>
+            <div class="form-group">
+                <label for="groq-api-key">Groq API Key (Optional)</label>
+                <input type="password" id="groq-api-key" placeholder="gsk_...">
+            </div>
+            <div class="button-group">
+                <button id="test-groq-api" style="background-color: #60a5fa;">Test Groq Connection</button>
+            </div>
+            <div id="groq-status" style="margin-top: 10px; font-weight: bold;"></div>
+        </div>
+
+        <div class="form-group" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <h2>Activity Logs</h2>
+            <p>View and export browser/extension activity logs for workflow analysis.</p>
+            <div class="button-group">
+                <button id="refresh-logs" style="background-color: #007bff; margin-right: 10px;">Refresh Logs</button>
+                <button id="export-logs" style="background-color: #6c757d; margin-right: 10px;">Export Logs
+                    (JSON)</button>
+                <button id="clear-logs" style="background-color: #dc3545;">Clear Logs</button>
+            </div>
+            <div id="logs-container"
+                style="margin-top: 20px; max-height: 400px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; border: 1px solid #ddd;">
+                <em>Click 'Refresh Logs' to view recent activity...</em>
+            </div>
+        </div>
+
+        <div id="status"></div>
+
+        <script src="../js/universal_logger.js"></script>
+        <script src="options.js"></script>
+</body>
+
+</html>

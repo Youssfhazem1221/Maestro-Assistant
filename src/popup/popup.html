@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: sans-serif;
+            width: 300px;
+            padding: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #tokenStatus {
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>SMYLE Settings</h3>
+
+    <label for="maestroToken">Maestro Token:</label>
+    <input type="text" id="maestroToken" placeholder="Enter token...">
+
+    <button id="saveTokenBtn">Save Token</button>
+    <div id="tokenStatus"></div>
+
+    <button id="openOptionsButton" style="background: #eee; color: #333; margin-top: 20px;">Open Full Options</button>
+    <script src="../js/universal_logger.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>

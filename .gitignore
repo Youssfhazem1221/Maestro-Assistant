@@ -1,0 +1,26 @@
+# Large Log Files
+logs.json
+today_recent.json
+today_recent_compact.json
+recent.json
+
+# Build Output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# API Keys & Secrets
+.env
+.env.local
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

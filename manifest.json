@@ -1,0 +1,121 @@
+{
+  "manifest_version": 3,
+  "name": "Maestro Assistant 1.5 Beta",
+  "version": "1.5",
+  "description": "Productivity extension for Maestro, HelpScout, ShipStation, and more.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "tabs",
+    "scripting",
+    "activeTab",
+    "identity"
+  ],
+  "host_permissions": [
+    "*://*.smyleteam.com/*",
+    "https://*.shipstation.com/*",
+    "https://dashboard.stripe.com/*",
+    "https://partner.giddyup.io/*",
+    "https://secure.helpscout.net/*",
+    "https://api.helpscout.net/*",
+    "https://d33v4339jhl8k0.cloudfront.net/*",
+    "https://*.dhl.com/*",
+    "*://admin.revibe.com/*",
+    "https://smyleteam.atlassian.net/*"
+  ],
+  "icons": {
+    "16": "src/assets/icon.png",
+    "32": "src/assets/icon.png",
+    "48": "src/assets/icon.png",
+    "128": "src/assets/icon.png"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Maestro Assistant 1.5 Beta"
+  },
+  "options_page": "src/options/options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.smyleteam.com/*"
+      ],
+      "js": [
+        "src/content/maestro_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://*.shipstation.com/*"
+      ],
+      "js": [
+        "src/content/shipstation_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://dashboard.stripe.com/*"
+      ],
+      "js": [
+        "src/content/stripe_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://partner.giddyup.io/*"
+      ],
+      "js": [
+        "src/content/giddyup_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://secure.helpscout.net/*"
+      ],
+      "js": [
+        "src/js/helpscout_logger.js",
+        "src/content/helpscout_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://*.dhl.com/*"
+      ],
+      "js": [
+        "src/content/dhl_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://admin.revibe.com/*"
+      ],
+      "js": [
+        "src/content/revibe_admin_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://smyleteam.atlassian.net/*"
+      ],
+      "js": [
+        "src/content/jira_content.js"
+      ]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/js/universal_logger.js"
+      ]
+    }
+  ],
+  "oauth2": {
+    "client_id": "REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID",
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets"
+    ]
+  }
+}
