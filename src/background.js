@@ -267,6 +267,40 @@ if (chrome.runtime && chrome.runtime.onMessage) {
         } else if (request.action === "searchMaestroApp") {
             navigateAndSearchMaestro(request.searchTerm, request.openInBackground);
             return true;
+        } else if (request.action === "searchMaestroSmart") {
+            (async () => {
+                const { email, name, openInBackground } = request;
+                console.log(`BACKGROUND: Smart Maestro Search for Email: ${email}, Name: ${name}`);
+
+                try {
+                    const tabs = await chrome.tabs.query({ url: "*://*.smyleteam.com/*" });
+                    let targetTab = null;
+                    if (tabs.length > 0) {
+                        targetTab = tabs[0];
+                    }
+
+                    if (targetTab) {
+                        if (!openInBackground) {
+                            await chrome.tabs.update(targetTab.id, { active: true });
+                            await chrome.windows.update(targetTab.windowId, { focused: true });
+                        }
+                        chrome.tabs.sendMessage(targetTab.id, {
+                            action: 'EXECUTE_SMART_MAESTRO_SEARCH',
+                            email: email,
+                            name: name
+                        });
+                    } else {
+                        // Pass both to storage for the new tab to pick up
+                        await chrome.storage.local.set({
+                            'pendingSmartMaestroSearch': { email, name }
+                        });
+                        await chrome.tabs.create({ url: MAESTRO_BASE_URL, active: !openInBackground });
+                    }
+                } catch (error) {
+                    console.error("BACKGROUND:", error);
+                }
+            })();
+            return true;
         } else if (request.action === "searchMaestroCustomer") {
             navigateAndSearchMaestroCustomer(request.searchTerm, request.openInBackground);
             return true;
@@ -297,8 +331,8 @@ if (chrome.runtime && chrome.runtime.onMessage) {
                 navigateAndSearchShipStation(request.searchTerm, request.openInBackground);
                 navigateAndSearchStripe(request.searchTerm, request.openInBackground);
             }
-        } else if (request.action === "searchCrossTab") {
-            // --- NEW: CROSS-TAB MAGIC SEARCH ---
+        } else if (request.action === "searchSmartSync") {
+            // --- NEW: SMART SYNC SEARCH (Renamed from Magic Search) ---
             (async () => {
                 const query = request.searchTerm;
                 console.log('BACKGROUND: Initiating cross-tab search for', query);
@@ -352,7 +386,7 @@ if (chrome.runtime && chrome.runtime.onMessage) {
                             'Authorization': `Bearer ${groqApiKey}`
                         },
                         body: JSON.stringify({
-                            model: 'llama3-8b-8192',
+                            model: 'llama-3.3-70b-versatile',
                             messages: [{ role: "user", content: "Test connection" }],
                             max_tokens: 1
                         }),
@@ -396,7 +430,7 @@ if (chrome.runtime && chrome.runtime.onMessage) {
                             'Authorization': `Bearer ${keyToUse}`
                         },
                         body: JSON.stringify({
-                            model: 'llama3-8b-8192',
+                            model: 'llama-3.3-70b-versatile',
                             messages: messages,
                             max_tokens: 250
                         }),
@@ -508,6 +542,33 @@ if (chrome.runtime && chrome.runtime.onMessage) {
                 } else {
                     sendResponse({ success: false, error: result.error });
                 }
+            })();
+            return true;
+        } else if (request.action === "EXPORT_ACTIVITY_SMART") {
+            (async () => {
+                const { activity_logs = [] } = await chrome.storage.local.get('activity_logs');
+                if (activity_logs.length === 0) {
+                    sendResponse({ success: false, error: "No logs found to export." });
+                    return;
+                }
+
+                // Create CSV Header
+                const headers = ["Timestamp", "Type", "Source", "URL", "Title", "Details"];
+                const rows = activity_logs.map(log => [
+                    log.timestamp || "",
+                    log.type || "",
+                    log.source || "",
+                    log.url || "",
+                    (log.title || "").replace(/"/g, '""'),
+                    JSON.stringify(log.details || {}).replace(/"/g, '""')
+                ]);
+
+                const csvContent = [
+                    headers.join(","),
+                    ...rows.map(r => r.map(cell => `"${cell}"`).join(","))
+                ].join("\n");
+
+                sendResponse({ success: true, csv: csvContent });
             })();
             return true;
         }

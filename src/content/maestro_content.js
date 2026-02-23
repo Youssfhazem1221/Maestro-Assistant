@@ -274,6 +274,27 @@ if (document.readyState === 'loading') {
 chrome.runtime.onMessage.addListener((req) => {
     if (req.action === "triggerMaestroSearch") {
         performAutomation();
+    } else if (req.action === "EXECUTE_SMART_MAESTRO_SEARCH") {
+        console.log("MAESTRO_CONTENT: Received EXECUTE_SMART_MAESTRO_SEARCH", req);
+        const { email, name } = req;
+
+        if (window.location.pathname.includes('/orders')) {
+            await performOrderSearch(email);
+            setTimeout(async () => {
+                const results = document.querySelectorAll('tbody tr');
+                const hasResults = results.length > 0 && !results[0].innerText.includes('No data');
+                if (!hasResults) {
+                    console.log("MAESTRO_CONTENT: No results for email, falling back to Name...");
+                    chrome.storage.local.set({ 'pendingMaestroCustomerSearch': name }, () => {
+                        window.location.href = `https://maestro.smyleteam.com/customers`;
+                    });
+                }
+            }, 5000);
+        } else {
+            chrome.storage.local.set({ 'pendingMaestroCustomerSearch': name }, () => {
+                window.location.href = `https://maestro.smyleteam.com/customers`;
+            });
+        }
     }
 });
 
@@ -1586,11 +1607,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             // Set value
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
             nativeInputValueSetter.call(searchInput, request.query);
-            
+
             // Dispatch Events to trigger React state changes
             searchInput.dispatchEvent(new Event('input', { bubbles: true }));
             searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-            
+
             // Hit enter if it's within a form or trigger a click on search button if available
             const enterEvent = new KeyboardEvent('keydown', {
                 key: 'Enter',

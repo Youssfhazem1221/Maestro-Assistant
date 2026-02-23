@@ -180,12 +180,16 @@ function injectSidebarSearchButton() {
         assistantPanel = document.createElement('div');
         assistantPanel.id = 'maestro-assistant-panel';
         assistantPanel.style.cssText = `
-            margin: 10px 0;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 280px;
+            z-index: 10000;
             background: #ffffff;
             border: 1px solid #e3e8eb;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         `;
 
         // Panel Header
@@ -210,7 +214,7 @@ function injectSidebarSearchButton() {
         content.style.cssText = 'padding: 10px; display: flex; flex-direction: column; gap: 10px;';
         assistantPanel.appendChild(content);
 
-        conversationsSection.parentNode.insertBefore(assistantPanel, conversationsSection.nextSibling);
+        document.body.appendChild(assistantPanel);
     }
 
     const panelContent = assistantPanel.querySelector('#maestro-assistant-content');
@@ -319,14 +323,14 @@ function injectSidebarSearchButton() {
     // --- SECTION 1: SEARCH TOOLS ---
     const searchSection = createSection('maestro-search-section', 'Search Tools');
 
-    // Magic Row (Prominent)
+    // Smart Sync Row (Prominent)
     const magicRow = createRow('maestro-search-section', 'maestro-magic-row');
-    createOrUpdateBtn('maestro-magic-search-btn', 'Magic Cross-Tab Search',
-        `<img src="https://maestro.smyleteam.com/assets/images/maestr-m.png" style="width: 14px; height: 14px; margin-right: 8px;"><strong>MAGIC SEARCH</strong>`,
+    createOrUpdateBtn('maestro-magic-search-btn', 'Smart Sync Cross-Tab Search',
+        `<img src="https://maestro.smyleteam.com/assets/images/maestr-m.png" style="width: 14px; height: 14px; margin-right: 8px;"><strong>SMART SYNC</strong>`,
         '#f0f9ff',
         (e) => {
             if (!e) return;
-            chrome.runtime.sendMessage({ action: 'searchCrossTab', searchTerm: e });
+            chrome.runtime.sendMessage({ action: 'searchSmartSync', searchTerm: e });
         },
         magicRow, getEmail,
         {
@@ -346,15 +350,20 @@ function injectSidebarSearchButton() {
     subGrid.style.gridTemplateColumns = '1fr 1fr';
     subGrid.style.gap = '4px';
 
-    createOrUpdateBtn('maestro-cust-email-btn', 'Maestro (Email)',
-        `Maestro Email`, '#ffffff',
-        (e) => chrome.runtime.sendMessage({ action: "searchMaestroCustomer", searchTerm: e, openInBackground: true }),
-        subGrid, getEmail, { fontSize: '10px' }
-    );
-    createOrUpdateBtn('maestro-cust-name-btn', 'Maestro (Name)',
-        `Maestro Name`, '#ffffff',
-        (n) => chrome.runtime.sendMessage({ action: "searchMaestroCustomer", searchTerm: n, openInBackground: true }),
-        subGrid, getName, { fontSize: '10px' }
+    createOrUpdateBtn('maestro-smart-search-btn', 'Smart Maestro Search (Email > Name)',
+        `Smart Maestro Search`, '#4f46e5',
+        () => {
+            const email = getEmail();
+            const name = getName();
+            chrome.runtime.sendMessage({
+                action: "searchMaestroSmart",
+                email: email,
+                name: name,
+                openInBackground: true
+            });
+        },
+        searchSection, null, null,
+        { color: '#fff', border: 'none', height: '36px', width: '100%', marginBottom: '4px' }
     );
 
     // --- SECTION 2: AI & AUTOMATIONS ---
@@ -426,10 +435,25 @@ function injectSidebarSearchButton() {
         panelContent, getEmail, { width: '100%', height: '36px', fontWeight: '800', marginTop: '5px' }
     );
 
-    // Stability
-    createOrUpdateBtn('maestro-perf-report-btn', 'Perf', `📊 Stability`, '#ffffff',
-        () => MaestroPerf.printStabilityReport(),
-        panelContent, null, { width: '100%', opacity: '0.5', fontSize: '9px', marginTop: '5px' }
+    // Export Activity Button (Relocated to bottom-left area)
+    createOrUpdateBtn('maestro-export-activity-btn', 'Export Smart Activity Log',
+        `📂 Export Activity`, '#ffffff',
+        () => {
+            chrome.runtime.sendMessage({ action: 'EXPORT_ACTIVITY_SMART' }, (response) => {
+                if (response && response.success && response.csv) {
+                    const blob = new Blob([response.csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `maestro-smart-activity-${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } else {
+                    alert("Export failed: " + (response?.error || "Unknown error"));
+                }
+            });
+        },
+        panelContent, null, { width: '100%', fontSize: '11px', marginTop: '10px', borderColor: '#cbd5e1' }
     );
 }
 
