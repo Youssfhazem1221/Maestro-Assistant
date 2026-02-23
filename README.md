@@ -8,14 +8,18 @@ A powerful productivity extension to bridge HelpScout, Maestro CRM, ShipStation,
 - **Workflow Macros**: Auto wrap-up, tracking grabber, and conversation merging.
 - **Centralized Panel**: All tools consolidated into a single HelpScout sidebar.
 
-## Installation for Users
-To use this extension, follow these steps:
+## 🚀 Fast & Easy Installation (For Team Members)
+No coding required! Just follow these 4 simple steps:
 
-1.  **Download**: Go to the [Releases](https://github.com/Youssfhazem1221/Maestro-Assistant/releases) page and download the `maestro-assistant.zip`.
-2.  **Extract**: Unzip the folder to a permanent location on your computer.
-3.  **Manage Extensions**: Open Chrome and navigate to `chrome://extensions/`.
-4.  **Developer Mode**: Enable the **Developer mode** toggle in the top right.
-5.  **Load Unpacked**: Click **Load unpacked** and select the `dist` folder located inside the extracted directory.
+1.  **Download the Extension**: Go to the [**Latest Release**](https://github.com/Youssfhazem1221/Maestro-Assistant/releases) and click on `maestro-assistant.zip` to download it.
+2.  **Unzip it**: Once downloaded, right-click the file and select **"Extract All"**. Pin this folder somewhere safe (like your Documents).
+3.  **Open Chrome Extensions**: In your Chrome browser, type `chrome://extensions/` in the address bar and hit Enter.
+4.  **Load it**: 
+    - Turn on **"Developer mode"** (top right switch).
+    - Click the **"Load unpacked"** button (top left).
+    - Select the folder you just unzipped.
+
+**That's it!** The Maestro icon will appear in your extensions list.
 
 ## Development
 This project uses **Vite** and **CRXJS** for modern extension development.
